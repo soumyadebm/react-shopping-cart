@@ -3,7 +3,7 @@ import formatPrice from 'utils/formatPrice';
 import { IProduct } from 'models';
 import { useCart } from 'contexts/cart-context';
 import * as S from './style';
-import rudderanalytics from '../../../utils/rudderstack';  // Add this line
+import rudderanalytics from '../../../utils/rudderstack';
 
 interface IProps {
   product: IProduct;
@@ -63,7 +63,6 @@ const Product = ({ product }: IProps) => {
   const handleAddProduct = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent product click event from firing
 
-    // Add RudderStack tracking
     rudderanalytics.track('Product Added', {
       product_id: sku,
       name: title,
@@ -71,7 +70,8 @@ const Product = ({ product }: IProps) => {
       currency: currencyId,
       currency_format: currencyFormat,
       quantity: 1,
-      has_free_shipping: isFreeShipping
+      has_free_shipping: isFreeShipping,
+      input_method: 'mouse'
     });
 
     addProduct({ ...product, quantity: 1 });
@@ -80,6 +80,17 @@ const Product = ({ product }: IProps) => {
 
   const handleAddProductWhenEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter' || event.code === 'Space') {
+      rudderanalytics.track('Product Added', {
+        product_id: sku,
+        name: title,
+        price: price,
+        currency: currencyId,
+        currency_format: currencyFormat,
+        quantity: 1,
+        has_free_shipping: isFreeShipping,
+        input_method: 'keyboard'
+      });
+
       addProduct({ ...product, quantity: 1 });
       openCart();
     }

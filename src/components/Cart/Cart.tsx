@@ -92,6 +92,19 @@ const Cart = () => {
 
   const handleToggleCart = (isOpen: boolean) => () => {
     if (isOpen) {
+      // Track cart closed with RudderStack
+      rudderanalytics.track('Cart Closed', {
+        products: products.map(product => ({
+          product_id: product.sku,
+          name: product.title,
+          price: product.price,
+          quantity: product.quantity,
+        })),
+        total_quantity: total.productQuantity,
+        revenue: total.totalPrice,
+        currency: total.currencyId,
+        currency_format: total.currencyFormat
+      });
       posthog.capture('cart_closed');
       closeCart();
     } else {

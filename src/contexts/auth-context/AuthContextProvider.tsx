@@ -49,6 +49,12 @@ const AuthProvider: FC = (props) => {
   };
 
   const logout = () => {
+    // Track logout before resetting identity
+    rudderanalytics.track('User Logged Out', {
+      username: username,
+      login_method: localStorage.getItem('login_method') || 'simple_login'
+    });
+
     setIsAuthenticated(false);
     setUsername(null);
     localStorage.removeItem('username');
@@ -68,4 +74,3 @@ const AuthProvider: FC = (props) => {
 };
 
 export { AuthProvider, useAuthContext };
-

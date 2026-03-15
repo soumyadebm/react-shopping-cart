@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import posthog from '../../utils/posthog'; // Add this import
+import posthog from '../../utils/posthog';
+import rudderanalytics from '../../utils/rudderstack';
 
 import Loader from 'components/Loader';
 import { GithubCorner, GithubStarButton } from 'components/Github';
@@ -20,8 +21,12 @@ function App() {
 
   // Track page views and user sessions
   useEffect(() => {
-    // Identify user session (you can add user ID if you have authentication)
     posthog.capture('app_loaded', {
+      products_count: products?.length || 0,
+    });
+
+    // Track page view with RudderStack
+    rudderanalytics.page('', 'Home', {
       products_count: products?.length || 0,
     });
   }, [products]);
