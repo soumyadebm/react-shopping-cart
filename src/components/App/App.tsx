@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import posthog from '../../utils/posthog'; // Add this import
+import rudderanalytics from '../../utils/rudderstack';
 
 import Loader from 'components/Loader';
 import { GithubCorner, GithubStarButton } from 'components/Github';
@@ -17,6 +18,11 @@ function App() {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  // Track page view on app mount
+  useEffect(() => {
+    rudderanalytics.page('Home');
+  }, []);
 
   // Track page views and user sessions
   useEffect(() => {
