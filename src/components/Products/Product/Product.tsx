@@ -38,48 +38,29 @@ const Product = ({ product }: IProps) => {
     );
   }
 
-  const handleProductClick = () => {
-    // Track product viewed when clicked
-    rudderanalytics.track('Product Viewed', {
-      product_id: sku,
-      name: title,
-      price: price,
-      currency: currencyId,
-      currency_format: currencyFormat,
-      has_free_shipping: isFreeShipping
-    });
+  const productTrackingProps = {
+    product_id: sku,
+    name: title,
+    price,
+    currency: currencyId,
+    currency_format: currencyFormat,
+    has_free_shipping: isFreeShipping,
+  };
 
-    // Track product click
-    rudderanalytics.track('Product Clicked', {
-      product_id: sku,
-      name: title,
-      price: price,
-      currency: currencyId,
-      currency_format: currencyFormat,
-      has_free_shipping: isFreeShipping
-    });
+  const handleProductClick = () => {
+    rudderanalytics.track('Product Clicked', productTrackingProps);
   };
 
   const handleAddProduct = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent product click event from firing
-
-    // Add RudderStack tracking
-    rudderanalytics.track('Product Added', {
-      product_id: sku,
-      name: title,
-      price: price,
-      currency: currencyId,
-      currency_format: currencyFormat,
-      quantity: 1,
-      has_free_shipping: isFreeShipping
-    });
-
+    e.stopPropagation();
+    rudderanalytics.track('Product Added', { ...productTrackingProps, quantity: 1 });
     addProduct({ ...product, quantity: 1 });
     openCart();
   };
 
   const handleAddProductWhenEnter = (event: KeyboardEvent) => {
     if (event.key === 'Enter' || event.code === 'Space') {
+      rudderanalytics.track('Product Added', { ...productTrackingProps, quantity: 1 });
       addProduct({ ...product, quantity: 1 });
       openCart();
     }

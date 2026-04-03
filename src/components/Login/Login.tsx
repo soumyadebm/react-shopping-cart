@@ -14,11 +14,11 @@ const Login = ({ isOpen, onClose }: IProps) => {
   const [password, setPassword] = useState('');
   const { login } = useAuth();
 
-  // Reset form when modal opens/closes
   useEffect(() => {
     if (isOpen) {
       setUsername('');
       setPassword('');
+      rudderanalytics.track('Login Modal Opened', {});
     }
   }, [isOpen]);
 
@@ -40,9 +40,14 @@ const Login = ({ isOpen, onClose }: IProps) => {
     }
   };
 
+  const handleDismiss = () => {
+    rudderanalytics.track('Login Modal Dismissed', {});
+    onClose();
+  };
+
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      handleDismiss();
     }
   };
 
@@ -51,7 +56,7 @@ const Login = ({ isOpen, onClose }: IProps) => {
   return (
     <S.Overlay onClick={handleOverlayClick}>
       <S.LoginCard onClick={(e) => e.stopPropagation()}>
-        <S.CloseButton onClick={onClose}>×</S.CloseButton>
+        <S.CloseButton onClick={handleDismiss}>×</S.CloseButton>
         <S.Title>Login</S.Title>
         <S.Subtitle>Optional - Any credentials will work</S.Subtitle>
         <S.Form onSubmit={handleSubmit}>
